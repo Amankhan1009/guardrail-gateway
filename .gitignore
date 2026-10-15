@@ -1,0 +1,24 @@
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# Environment variables & secrets (CRITICAL: never commit)
+.env
+.env.*
+!.env.example
+
+# Python bytecode & runtime cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Testing & NeMo cache
+.pytest_cache/
+.cache/
+*.log
+
+# OS & Editor specific files
+.DS_Store
+.vscode/
+.idea/

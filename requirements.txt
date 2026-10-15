@@ -1,0 +1,22 @@
+# Web Framework & ASGI Server
+fastapi>=0.110.0,<0.116.0
+uvicorn[standard]>=0.28.0,<0.35.0
+
+# Data Validation & Environment
+pydantic>=2.6.0,<3.0.0
+python-dotenv>=1.0.0
+
+# LLM Gateway & Provider Client
+portkey-ai>=1.2.0
+
+# Guardrail Framework & LangChain Core Alignment
+nemoguardrails>=0.9.0,<0.12.0
+langchain-core>=0.2.38,<0.3.0
+langchain-openai>=0.1.20,<0.2.0
+
+# HTTP Client & Testing
+httpx>=0.27.0
+pytest>=8.0.0
+
+# Frontend Web Interface
+streamlit>=1.32.0

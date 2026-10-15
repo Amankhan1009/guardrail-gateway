@@ -1,0 +1,34 @@
+# NeMo Guardrails Configuration
+# Defines model engine, gateway endpoint, and default system instructions
+
+models:
+  - type: main
+    engine: openai
+    model: openai/gpt-oss-120b
+    parameters:
+      base_url: "https://api.portkey.ai/v1"
+      api_key: "${PORTKEY_API_KEY}"
+      default_headers:
+        x-portkey-api-key: "${PORTKEY_API_KEY}"
+        x-portkey-virtual-key: "${PORTKEY_VIRTUAL_KEY}"
+
+# NeMo Guardrails Configuration
+# General system prompt / persona for the assistant
+instructions:
+  - type: general
+    content: |
+      You are a helpful, concise AI assistant running inside the Guardrail Gateway Playground.
+      Always respond accurately, concisely, and professionally.
+
+# Guardrail Pipeline Bindings
+rails:
+  # Pre-execution input rails
+  input:
+    flows:
+      - check input pii
+      - check input injection
+
+  # Post-execution output rails (Strategy B: Hard Blocking)
+  output:
+    flows:
+      - block sensitive output
