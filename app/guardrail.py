@@ -1,6 +1,7 @@
 """
 Guardrail Engine Bridge.
-Initializes NeMo Guardrails wired to route through the Portkey AI Gateway.
+Initializes NeMo Guardrails wired to route through the Portkey AI Gateway
+with dynamic cross-provider fallback (Groq -> Mistral).
 """
 
 from pathlib import Path
@@ -19,21 +20,27 @@ def get_rails_instance() -> LLMRails:
     config_path = Path(__file__).parent.parent / "config"
     config = RailsConfig.from_path(str(config_path))
 
-    # 2. Configure LangChain's ChatOpenAI client pointing to Portkey
-    # This guarantees that we use /v1/chat/completions (not legacy /v1/completions)
+    # 2. Build Portkey routing headers
+    # If a Portkey Config ID is set, Portkey manages multi-provider failover
+    headers = {
+        "x-portkey-api-key": settings.portkey_api_key,
+    }
+    if settings.portkey_config_id:
+        headers["x-portkey-config"] = settings.portkey_config_id
+    else:
+        headers["x-portkey-virtual-key"] = settings.portkey_virtual_key
+
+    # 3. Configure LangChain's ChatOpenAI client pointing to Portkey Gateway
     chat_model = ChatOpenAI(
         model=settings.groq_model,
         base_url=settings.portkey_gateway_url,
         api_key=settings.portkey_api_key,
-        default_headers={
-            "x-portkey-api-key": settings.portkey_api_key,
-            "x-portkey-virtual-key": settings.portkey_virtual_key,
-        },
+        default_headers=headers,
         temperature=0.0,
         max_tokens=256,
     )
 
-    # 3. Instantiate NeMo Guardrails with our custom chat client
+    # 4. Instantiate NeMo Guardrails with our custom chat client
     return LLMRails(config=config, llm=chat_model)
 
 

@@ -1,6 +1,6 @@
 """
 Application configuration and environment variable management.
-Loads and validates credentials required for Portkey and Groq.
+Loads and validates credentials required for Portkey, Groq, and Mistral fallback.
 """
 
 import os
@@ -19,6 +19,7 @@ class Settings:
     portkey_api_key: str
     portkey_virtual_key: str
     groq_model: str
+    portkey_config_id: str = ""
     portkey_gateway_url: str = "https://api.portkey.ai/v1"
 
 
@@ -28,6 +29,7 @@ def load_settings() -> Settings:
     """
     portkey_api_key = os.getenv("PORTKEY_API_KEY", "").strip()
     portkey_virtual_key = os.getenv("PORTKEY_VIRTUAL_KEY", "").strip()
+    portkey_config_id = os.getenv("PORTKEY_CONFIG_ID", "").strip()
     groq_model = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b").strip()
 
     missing = []
@@ -46,6 +48,7 @@ def load_settings() -> Settings:
         portkey_api_key=portkey_api_key,
         portkey_virtual_key=portkey_virtual_key,
         groq_model=groq_model,
+        portkey_config_id=portkey_config_id,
     )
 
 

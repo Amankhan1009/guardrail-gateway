@@ -1,6 +1,6 @@
 """
 Portkey Gateway Adapter.
-Configures the Portkey AI Gateway client using our Portkey Virtual Key.
+Configures the Portkey AI Gateway client supporting fallback configs.
 """
 
 from portkey_ai import Portkey
@@ -9,12 +9,14 @@ from app.config import settings
 
 def get_portkey_client() -> Portkey:
     """
-    Initializes and returns a Portkey client configured with our Virtual Key.
-    
-    The Virtual Key automatically tells Portkey:
-    - To route the call to Groq.
-    - Which Groq API key to attach from Portkey's vault.
+    Initializes and returns a Portkey client configured with our Fallback Config
+    or standard Virtual Key.
     """
+    if settings.portkey_config_id:
+        return Portkey(
+            api_key=settings.portkey_api_key,
+            config=settings.portkey_config_id,
+        )
     return Portkey(
         api_key=settings.portkey_api_key,
         virtual_key=settings.portkey_virtual_key,
@@ -27,7 +29,7 @@ portkey_client = get_portkey_client()
 
 def test_gateway_connection(prompt: str = "Say hello in one short sentence.") -> str:
     """
-    Executes a test call through Portkey to Groq.
+    Executes a test call through Portkey.
     
     Args:
         prompt: A test message to send.
